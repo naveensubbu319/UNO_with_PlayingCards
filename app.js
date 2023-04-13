@@ -19,26 +19,27 @@ let direction = 1;
 let draw = false;
 let winner = null;
 
-// Helper functions
+// Creates the deck of cards with its card type and a number/power
 function createDeck() {
   const deck = [];
   CARD_TYPES.forEach((type) => {
     for (let i = 2; i <= 10; i++) {
-      deck.push({ type, number: i });
+      deck.push({ type, card: i });
     }
     ACTION_CARDS.forEach((card) => {
-      deck.push({ type, card });
+      deck.push({ type, card:card });
   });
   });
   return deck;
 }
 
 // shuffles all the cards
-function shuffleDeck() {
+function shuffleDeck(deck) {
   for (let i = deck.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]];
   }
+  return deck;
 }
 
 // Add a Player when there is less than 4 players 
@@ -64,28 +65,23 @@ function dealCards() {
   openCard = deck.pop();
 }
 
-function getNextPlayer() {
-  return players[currentPlayerIndex + direction];
+// return the index of the next Player in the direction
+function nextPlayerIndex(){
+  NextPlayerIndex = (currentPlayerIndex + direction)%(players.length);
+  return NextPlayerIndex;
 }
 
-function plus2Plus4Card(number){
-
+// Adds the cards to nexe player when there is +2 or +4
+function AddCardsToNextPlayer(number){
+  for (let i = 0; i < number; j++) {
+    players[currentPlayerIndex + direction].cards.push(deck.pop());
+    checkforDraw();
+}
+  // just moving to the player who took cards .. But the players turn will be skipped in the next step
+  nextTurn();
 }
 
-function getNextCard() {
-  const card = deck.pop();
-  if (card.type === "J") {
-    players[currentPlayerIndex + direction].cards.push(...Array(4).fill({}));
-  } else if (card.type === "Q") {
-    getNextPlayer().cards.push(...Array(2).fill({}));
-  } else if (card.type === "K") {
-    direction *= -1;
-  } else if (card.type === "A") {
-    getNextPlayer().skipTurn = true;
-  }
-  return card;
-}
-
+// check if the move is valid 
 function isValidMove(card) {
   if (card.type === openCard.type || card.number === openCard.number) {
     return true;
@@ -111,31 +107,50 @@ function canPlay() {
   return false;
 }
 
-
+// check if the opencard is a power card and take the necessary step
 function checkForPowerCard(){
-
+  if (openCard.card === "J") {
+    AddCardsToNextPlayer(4);
+  } else if (openCard.card === "Q") {
+    AddCardsToNextPlayer(2);
+  } else if (openCard.card === "K") {
+    direction *= -1;
+  } else if (openCard.card === "A") {
+    currentPlayerIndex = nextPlayerIndex();
+  }
 }
+
+
+// Actual Action of drooping a card
+function makeMove(card){
+if(isValidMove(card)){
+  let index = players[currentPlayerIndex].cards.indexOf(card);
+  if (index > -1) {
+    players[currentPlayerIndex].cards.splice(index, 1);
+  }
+  openCard = card;
+}
+}
+
 // Actual move of the player
 function ActualMove(){
-if(canPlay() && (draw === false || winner === null)){
-  makeMove(card);
-  checkForWinner();
-  checkForPowerCard();
-  nextTurn();
-}else{
-  players[currentPlayerIndex].cards.push(deck.pop());
-  checkforDraw();
-  nextTurn()
+if((draw === false && winner === null)){
+  if(canPlay()){
+    makeMove(card);
+    checkForWinner();
+    checkForPowerCard();
+    nextTurn();
+  }else{
+    players[currentPlayerIndex].cards.push(deck.pop());
+    checkforDraw();
+    nextTurn()
+  }
 }
 }
 
+// making the index move to next Player 
 function nextTurn() {
-  currentPlayerIndex = getNextPlayerIndex();
-  if (players[currentPlayerIndex].skipTurn) {
-    players[currentPlayerIndex].skipTurn = false;
-    nextTurn();
-  }
-  io.emit("playerTurn", currentPlayerIndex);
+  currentPlayerIndex = nextPlayerIndex();
 }
 
 // checks if the current Player is the winner
