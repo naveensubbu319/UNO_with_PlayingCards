@@ -57,6 +57,8 @@ function addPlayers(playerName) {
 
 // Deal 5 cards each to all the players
 function dealCards() {
+  let deck = createDeck();
+  deck = shuffleDeck(deck);
   for (let i = 0; i < players.length; i++) {
     for (let j = 0; j < 5; j++) {
       players[i].cards.push(deck.pop());
