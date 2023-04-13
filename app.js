@@ -38,6 +38,20 @@ function shuffleDeck() {
   }
 }
 
+// Add a Player when there is less than 4 players 
+function addPlayers(playerName) {
+  if(players.length<4){
+  let player = {
+    name:playerName,
+    cards:[]
+}
+  players.push(player);
+}else{
+  // give error message that can't add more than 4 people
+}
+}
+
+// Deal 5 cards each to all the players
 function dealCards() {
   for (let i = 0; i < players.length; i++) {
     for (let j = 0; j < 5; j++) {
