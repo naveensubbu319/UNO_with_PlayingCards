@@ -12,9 +12,12 @@ const ACTION_CARDS = ["A", "K", "Q", "J"];
 // Variables
 let deck = [];
 let players = [];
+let openCard=[]
 let currentPlayerIndex = 0;
 let currentCard = null;
 let direction = 1;
+let draw = false;
+let winner = null;
 
 // Helper functions
 function createDeck() {
@@ -58,26 +61,21 @@ function dealCards() {
       players[i].cards.push(deck.pop());
     }
   }
-}
-
-function getNextPlayerIndex() {
-  const nextPlayerIndex = currentPlayerIndex + direction;
-  if (nextPlayerIndex < 0) {
-    return players.length - 1;
-  } else if (nextPlayerIndex >= players.length) {
-    return 0;
-  }
-  return nextPlayerIndex;
+  openCard = deck.pop();
 }
 
 function getNextPlayer() {
-  return players[getNextPlayerIndex()];
+  return players[currentPlayerIndex + direction];
+}
+
+function plus2Plus4Card(number){
+
 }
 
 function getNextCard() {
   const card = deck.pop();
   if (card.type === "J") {
-    players[getNextPlayerIndex()].cards.push(...Array(4).fill({}));
+    players[currentPlayerIndex + direction].cards.push(...Array(4).fill({}));
   } else if (card.type === "Q") {
     getNextPlayer().cards.push(...Array(2).fill({}));
   } else if (card.type === "K") {
@@ -89,20 +87,21 @@ function getNextCard() {
 }
 
 function isValidMove(card) {
-  if (!currentCard) {
+  if (card.type === openCard.type || card.number === openCard.number) {
     return true;
+  }else{
+  return false;
   }
-  if (card.type === currentCard.type || card.number === currentCard.number || card.type === "J") {
-    return true;
-  }
-  for (let i = 0; i < players[currentPlayerIndex].cards.length; i++) {
-    if (players[currentPlayerIndex].cards[i].type === currentCard.type || players[currentPlayerIndex].cards[i].number === currentCard.number || players[currentPlayerIndex].cards[i].type === "J") {
-      return false;
-    }
-  }
-  return true;
 }
 
+//declare Draw if deck becomes empty
+function checkforDraw(){
+  if(deck.length===0){
+    draw = true;
+  }
+}
+
+// To check if the player has any playable card
 function canPlay() {
   for (let i = 0; i < players[currentPlayerIndex].cards.length; i++) {
     if (isValidMove(players[currentPlayerIndex].cards[i])) {
@@ -110,6 +109,24 @@ function canPlay() {
     }
   }
   return false;
+}
+
+
+function checkForPowerCard(){
+
+}
+// Actual move of the player
+function ActualMove(){
+if(canPlay() && (draw === false || winner === null)){
+  makeMove(card);
+  checkForWinner();
+  checkForPowerCard();
+  nextTurn();
+}else{
+  players[currentPlayerIndex].cards.push(deck.pop());
+  checkforDraw();
+  nextTurn()
+}
 }
 
 function nextTurn() {
@@ -121,6 +138,11 @@ function nextTurn() {
   io.emit("playerTurn", currentPlayerIndex);
 }
 
+// checks if the current Player is the winner
 function checkForWinner() {
+  if(players[currentPlayerIndex].cards.length===0)
+  {
+    winner = players[currentPlayerIndex].name;
+  }
 }
 
