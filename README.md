@@ -1,6 +1,33 @@
-# Minimal Node.js Hello World example
+# Node.js Backend application to play UNO cards game using Playing cards
 
-This repo contains a minimal hello world application written in Node. This repo will document the many ways you can deploy this application.
+This repon contains all the back end function needed to play the UNO game using Playing cards.
+
+Problem Statement:
+Design a multiplayer card game that supports multiple players (up to 4) and different types of cards (e.g. number cards, action cards, etc.). The game should follow the following rules:
+
+Each player starts with a hand of 5 cards.
+
+The game starts with a deck of 52 cards ( a standard deck of playing cards).
+
+Players take turns playing cards from their hand, following a set of rules that define what cards can be played when.
+
+A player can only play a card if it matches either the suit or the rank of the top card on the discard pile.
+
+If a player cannot play a card, they must draw a card from the draw pile. If the draw pile is empty, the game ends in a draw and no player is declared a winner..
+
+The game ends when one player runs out of cardswho is declared the winner.
+
+BONUS: Aces, Kings, Queens and Jack are action cards. When one of these is played the following actions occur:
+
+Ace(A): Skip the next player in turn
+
+Kings(K): Reverse the sequence of who plays next 
+
+Queens(Q): +2
+
+Jacks(J): +4
+
+NOTE: actions are not stackable i.e. if Q is played by player 1 then player two draws two cards and cannot play a Q from his hand on that turn even if available
 
 ## Run locally
 
@@ -9,54 +36,3 @@ npm install
 npm start
 ```
 
-## Run in a container
-
-```bash
-docker build -t node-hello-world:latest .
-docker run -it -p 8080:8080 --name node-hello-world node-hello-world:latest
-```
-
-## Run on Cloud Foudry
-
-Details about the Cloud Foundry deployment can be found in [manifest.yml](manifest.yml).
-
-```bash
-# target a cloud foundry region
-ibmcloud target --cf
-
-# push the app
-ibmcloud cf push
-```
-
-## Run on IBM Kubernetes Service
-
-Ensure the container image URL is updated in [deployment.yaml](config/deployment.yaml).
-
-```bash
-# ibmcloud login  -r us-south -g default
-# ibmcloud cr region-set us-south
-# ibmcloud cr login
-
-# build and push to ICR
-# update the container registry to match your own namespace
-docker build -t us.icr.io/samples/node-hello-world:v1 .
-docker push us.icr.io/samples/node-hello-world:v1
-
-# deploy to IKS
-# update the cluster id field to match your IKS instance
-ibmcloud ks cluster config --cluster <cluster-id>
-kubectl config current-context
-kubectl apply -f config/
-kubectl rollout status deployment/node-hello-world
-kubectl get services -o wide
-```
-
-## Run on OpenShift
-
-```bash
-oc login
-oc new-project samples
-oc new-app nodejs~https://github.com/ibm/node-hello-world.git
-oc expose svc/node-hello-world
-oc get routes
-```
