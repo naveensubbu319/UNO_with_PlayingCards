@@ -76,7 +76,7 @@ function dealCards() {
 
 // return the index of the next Player in the direction
 function nextPlayerIndex(){
-  NextPlayerIndex = (currentPlayerIndex + direction)%(players.length);
+  let NextPlayerIndex = (currentPlayerIndex + direction)%(players.length);
   return NextPlayerIndex;
 }
 
@@ -91,7 +91,7 @@ function AddCardsToNextPlayer(number){
 }
 
 // check if the move is valid 
-function isValidMove(card) {
+function isValidMove(card,openCard) {
   if (card.type === openCard.type || card.number === openCard.number) {
     return true;
   }else{
@@ -174,6 +174,8 @@ module.exports = {
   createDeck,
   addPlayers,
   restart,
-  dealCards
+  dealCards,
+  nextPlayerIndex,
+  isValidMove
 };
 

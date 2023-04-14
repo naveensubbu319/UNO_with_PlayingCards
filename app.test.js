@@ -1,4 +1,4 @@
-const { createDeck,addPlayers,restart,dealCards } = require('./app.js');
+const { createDeck,addPlayers,restart,dealCards,nextPlayerIndex,isValidMove } = require('./app.js');
 
 const CARD_TYPES = ["club", "diamond", "heart", "spade"];
 const ACTION_CARDS = ["A", "K", "Q", "J"];
@@ -61,4 +61,28 @@ test('all players have exactly 5 cards', () => {
   for (let i = 0; i < players.length; i++) {
     expect(players[i].cards.length).toEqual(5);
   }
+});
+
+test('Next Player is called when nextplayer Index is called', () => {
+  index = nextPlayerIndex();
+  //initally it is 0
+  expect(index).toBe(1);
+});
+
+test('returns true when the card is of the same type as the open card', () => {
+  const card = { type: 'hearts', card: 5 };
+  const openCard = { type: 'hearts', card: 9 };
+  expect(isValidMove(card, openCard)).toBe(true);
+});
+
+test('returns true when the card has the same number as the open card', () => {
+  const card = { type: 'spades', card: 9 };
+  const openCard = { type: 'hearts', card: 9 };
+  expect(isValidMove(card, openCard)).toBe(true);
+});
+
+test('returns false when the card is neither of the same type nor has the same number as the open card', () => {
+  const card = { type: 'diamonds', card: 3 };
+  const openCard = { type: 'hearts', card: 9 };
+  expect(isValidMove(card, openCard)).toBe(false);
 });
