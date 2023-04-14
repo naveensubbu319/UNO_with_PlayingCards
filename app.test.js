@@ -1,7 +1,13 @@
-const { createDeck } = require('./app.js');
+const { createDeck,addPlayers } = require('./app.js');
 
 const CARD_TYPES = ["club", "diamond", "heart", "spade"];
 const ACTION_CARDS = ["A", "K", "Q", "J"];
+let players = [];
+
+beforeEach(() => {
+    // Reset players array before each test
+    players = [];
+  });
 
 test('createDeck returns a deck with 52 cards', () => {
   const deck = createDeck();
@@ -19,3 +25,25 @@ test('createDeck returns a deck with all card values', () => {
   const cardValues = deck.map(card => card.card);
   expect(cardValues).toEqual(expect.arrayContaining([...Array(9).keys()].map(i => i + 2).concat(ACTION_CARDS)));
 });
+
+test('addPlayers gives an error message when there are already 4 players', () => {
+    let players = [];
+    players = addPlayers('Player 1');
+    expect(players.length).toBe(1);
+    players = addPlayers('Player 2');
+    expect(players.length).toBe(2);
+    players = addPlayers('Player 3');
+    expect(players.length).toBe(3);
+    players = addPlayers('Player 4');
+    expect(players.length).toBe(4);
+    players = addPlayers('Player 5');
+    expect(players.length).toBe(4);
+  });
+
+test('addPlayers adds a player to the players array when there are less than 4 players', () => {
+  let players = [];
+  players = addPlayers('Player 1');
+  expect(players.length).toBe(1);
+  expect(players[0].name).toBe('Player 1');
+});
+

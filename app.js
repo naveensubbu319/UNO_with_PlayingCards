@@ -162,6 +162,7 @@ function checkForWinner() {
 }
 
 module.exports = {
-  createDeck
+  createDeck,
+  addPlayers
 };
 
