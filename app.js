@@ -2,8 +2,6 @@
 
 const express = require("express");
 const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
 
 // Constants
 const CARD_TYPES = ["club", "diamond", "heart", "spade"];
@@ -162,4 +160,8 @@ function checkForWinner() {
     winner = players[currentPlayerIndex].name;
   }
 }
+
+module.exports = {
+  createDeck
+};
 
