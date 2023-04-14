@@ -12,10 +12,19 @@ let deck = [];
 let players = [];
 let openCard=[]
 let currentPlayerIndex = 0;
-let currentCard = null;
 let direction = 1;
 let draw = false;
 let winner = null;
+
+function restart(){
+deck = [];
+players = [];
+openCard=[]
+currentPlayerIndex = 0;
+direction = 1;
+draw = false;
+winner = null;
+}
 
 // Creates the deck of cards with its card type and a number/power
 function createDeck() {
@@ -163,6 +172,8 @@ function checkForWinner() {
 
 module.exports = {
   createDeck,
-  addPlayers
+  addPlayers,
+  restart,
+  dealCards
 };
 

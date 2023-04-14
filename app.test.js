@@ -1,4 +1,4 @@
-const { createDeck,addPlayers } = require('./app.js');
+const { createDeck,addPlayers,restart,dealCards } = require('./app.js');
 
 const CARD_TYPES = ["club", "diamond", "heart", "spade"];
 const ACTION_CARDS = ["A", "K", "Q", "J"];
@@ -27,7 +27,7 @@ test('createDeck returns a deck with all card values', () => {
 });
 
 test('addPlayers gives an error message when there are already 4 players', () => {
-    let players = [];
+    restart()
     players = addPlayers('Player 1');
     expect(players.length).toBe(1);
     players = addPlayers('Player 2');
@@ -47,3 +47,18 @@ test('addPlayers adds a player to the players array when there are less than 4 p
   expect(players[0].name).toBe('Player 1');
 });
 
+test('all players have exactly 5 cards', () => {
+  // Add four players
+  addPlayers('Player 1');
+  addPlayers('Player 2');
+  addPlayers('Player 3');
+  addPlayers('Player 4');
+
+  // Deal cards
+  dealCards();
+
+  // Check that each player has exactly 5 cards
+  for (let i = 0; i < players.length; i++) {
+    expect(players[i].cards.length).toEqual(5);
+  }
+});
